@@ -22,6 +22,14 @@ public class GameBoard {
 		this.boardSize = boardSize;
 		this.numBoardPositions = boardSize * boardSize;
 	}
+
+	/**
+	 * Get board size.
+	 * @return 
+	 */
+	public int getBoardSize() {
+		return boardSize;
+	}
 	
 	/**
 	 * Place a player token at specified (1-indexed) position.
@@ -36,6 +44,20 @@ public class GameBoard {
 		}
 		boardMatrix.setValue(row, column, token.getValue());
 		numMoves++;
+	}
+	
+	/**
+	 * Gets the token currently at specified (1-indexed) position.
+	 * @param row
+	 * @param column
+	 * @return Token at position, or null if none
+	 */
+	public Token getTokenAt(int row, int column) {
+		int value = boardMatrix.getValue(row, column);
+		if (value != 0) {
+			return Token.valueOf(value);
+		}
+		return null;
 	}
 	
 	/**
