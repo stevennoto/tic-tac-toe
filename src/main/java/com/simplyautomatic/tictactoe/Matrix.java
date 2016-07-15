@@ -10,8 +10,11 @@ import java.util.stream.IntStream;
 public class Matrix {
 	private final int size;
 	private final Integer[][] matrix;
-//TODO: convert back to 'int'? Remove mapToInt(Integer::intValue). But causes problems with mirror().
 	
+	/**
+	 * Construct a square matrix, of width and height specified.
+	 * @param size 
+	 */
 	public Matrix(int size) {
 		this.size = size;
 		this.matrix = new Integer[size][size];
@@ -22,44 +25,93 @@ public class Matrix {
 		}
 	}
 	
+	/**
+	 * Get matrix size.
+	 * @return 
+	 */
 	public int getSize() {
 		return size;
 	}
 	
+	/**
+	 * Get current value at specified row/column. Row and column are 1-indexed.
+	 * @param row
+	 * @param column
+	 * @return
+	 * @throws ArrayIndexOutOfBoundsException 
+	 */
 	public Integer getValue(int row, int column) throws ArrayIndexOutOfBoundsException {
 		return matrix[row - 1][column - 1];
 	}
 	
+	/**
+	 * Set the current value at specified row/column. Row and column are 1-indexed.
+	 * @param row
+	 * @param column
+	 * @param value
+	 * @throws ArrayIndexOutOfBoundsException 
+	 */
 	public void setValue(int row, int column, Integer value) throws ArrayIndexOutOfBoundsException {
 		matrix[row - 1][column - 1] = value;
 	}
 	
+	/**
+	 * Get the total value of specified row. Row is 1-indexed.
+	 * @param row
+	 * @return
+	 * @throws ArrayIndexOutOfBoundsException 
+	 */
 	public Integer getRowTotal(int row) throws ArrayIndexOutOfBoundsException {
 		return Arrays.stream(matrix[row - 1]).mapToInt(Integer::intValue).sum();
 	}
 	
+	/**
+	 * Get the total value of specified column. Column is 1-indexed.
+	 * @param column
+	 * @return
+	 * @throws ArrayIndexOutOfBoundsException 
+	 */
 	public Integer getColumnTotal(int column) throws ArrayIndexOutOfBoundsException {
 		return Arrays.stream(matrix).map(rowArray -> rowArray[column - 1]).mapToInt(Integer::intValue).sum();
 	}
 	
+	/**
+	 * Get the total value of main diagonal.
+	 * @return
+	 * @throws ArrayIndexOutOfBoundsException 
+	 */
 	public Integer getMainDiagonalTotal() throws ArrayIndexOutOfBoundsException {
 		return IntStream.range(0, size).map(index -> matrix[index][index]).sum();
 	}
 	
+	/**
+	 * Get the total value of anti diagonal.
+	 * @return
+	 * @throws ArrayIndexOutOfBoundsException 
+	 */
 	public Integer getAntiDiagonalTotal() throws ArrayIndexOutOfBoundsException {
 		return IntStream.range(0, size).map(index -> matrix[index][size - 1 - index]).sum();
 	}
 	
+	/**
+	 * Flip the matrix vertically.
+	 */
 	public void flip() {
 		Collections.reverse(Arrays.asList(matrix));
 	}
 	
+	/**
+	 * Mirror the matrix horizontally
+	 */
 	public void mirror() {
 		for (Integer[] row : matrix) {
 			Collections.reverse(Arrays.asList(row));
 		}
 	}
 	
+	/**
+	 * Rotate the matrix 90 degrees clockwise
+	 */
 	public void rotate() {
 		Integer[][] matrixOld = new Integer[size][size];
 		for (int row = 0; row < size; row++) {
@@ -72,6 +124,10 @@ public class Matrix {
 		}
 	}
 	
+	/**
+	 * Convert the matrix to a simple string, for debugging
+	 * @return 
+	 */
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();
@@ -79,28 +135,10 @@ public class Matrix {
 		return text.toString();
 	}
 	
-//	@Override
-//	public int hashCode() {
-//		int hash = 3;
-//		hash = 79 * hash + Objects.hashCode(this.toString());
-//		return hash;
-//	}
-//
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (obj == null) {
-//			return false;
-//		}
-//		if (getClass() != obj.getClass()) {
-//			return false;
-//		}
-//		final Matrix other = (Matrix) obj;
-//		if (!Objects.equals(this.toString(), other.toString())) {
-//			return false;
-//		}
-//		return true;
-//	}
-	
+	/**
+	 * Main method, for testing
+	 * @param args 
+	 */
 	public static void main(String[] args) {
 		Matrix m = new Matrix(3);
 		System.out.println(m);
