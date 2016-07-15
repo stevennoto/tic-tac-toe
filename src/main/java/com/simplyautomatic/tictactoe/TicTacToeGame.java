@@ -36,81 +36,94 @@ public class TicTacToeGame {
 	public void start() {
 		out.println("Welcome to tic-tac-toe. Shall we play a game?");
 		
-		// Get board size, create board
-		out.println("Enter desired board size.");
-		int boardSize = 0;
 		while (true) {
-			String input = scanner.nextLine();
-			if (input != null && input.trim().matches("\\d+")) {
-				boardSize = Integer.parseInt(input.trim());
-			}
-			if (boardSize > 1) {
-				break;
-			} else {
-				out.println("Please enter a valid number, larger than 1.");
-			}
-		}
-		board = new GameBoard(boardSize);
 		
-		// Get token preference
-		out.println("Would you like to play as X or O? (X goes first)");
-		while (true) {
-			String input = scanner.nextLine();
-			if (input != null && input.equalsIgnoreCase("X")) {
-				playerToken = Token.X;
-				cpuToken = Token.O;
-				break;
-			} else if (input != null && input.equalsIgnoreCase("O")) {
-				playerToken = Token.O;
-				cpuToken = Token.X;
-				break;
-			} else {
-				out.println("Please enter X or O.");
-			}
-		}
-		currentTurnToken = Token.X;
-		
-		// Display initial empty board
-		out.println("Let's play!");
-		out.println(board.toString());
-		
-		// Main game loop
-		while(true) {
-			// Get move from player or CPU
-			Point move;
-			if (currentTurnToken == playerToken) {
-				move = getPlayerMove();
-			} else {
-				move = getCpuMove();
-			}
-			
-			// Place token, display board
-			board.placeToken(currentTurnToken, (int)move.getX(), (int)move.getY());
-			out.println(board.toString());
-			
-			// Check for win/draw
-			if (board.isWon()) {
-				Token winningToken = board.getWinningToken();
-				if (winningToken == playerToken) {
-					out.println("You won! Congratulations!");
-				} else {
-					out.println("You lost! How about a nice game of chess?");
+			// Get board size, create board
+			out.println("Enter desired board size.");
+			int boardSize = 0;
+			while (true) {
+				String input = scanner.nextLine();
+				if (input != null && input.trim().matches("\\d+")) {
+					boardSize = Integer.parseInt(input.trim());
 				}
-				break;
-			} else if (board.isDrawn()) {
-				out.println("The game is a draw. The only winning move is not to play.");
-				break;
+				if (boardSize > 1) {
+					break;
+				} else {
+					out.println("Please enter a valid number, larger than 1.");
+				}
+			}
+			board = new GameBoard(boardSize);
+
+			// Get token preference
+			out.println("Would you like to play as X or O? (X goes first)");
+			while (true) {
+				String input = scanner.nextLine();
+				if (input != null && input.equalsIgnoreCase("X")) {
+					playerToken = Token.X;
+					cpuToken = Token.O;
+					break;
+				} else if (input != null && input.equalsIgnoreCase("O")) {
+					playerToken = Token.O;
+					cpuToken = Token.X;
+					break;
+				} else {
+					out.println("Please enter X or O.");
+				}
+			}
+			currentTurnToken = Token.X;
+
+			// Display initial empty board
+			out.println("Let's play!");
+			out.println(board.toString());
+
+			// Main game loop
+			while(true) {
+				// Get move from player or CPU
+				Point move;
+				if (currentTurnToken == playerToken) {
+					move = getPlayerMove();
+				} else {
+					move = getCpuMove();
+				}
+
+				// Place token, display board
+				board.placeToken(currentTurnToken, (int)move.getX(), (int)move.getY());
+				out.println(board.toString());
+
+				// Check for win/draw
+				if (board.isWon()) {
+					Token winningToken = board.getWinningToken();
+					if (winningToken == playerToken) {
+						out.println("You won! Congratulations!");
+					} else {
+						out.println("You lost! How about a nice game of chess?");
+					}
+					break;
+				} else if (board.isDrawn()) {
+					out.println("The game is a draw. The only winning move is not to play.");
+					break;
+				}
+
+				// Pass turn
+				if (currentTurnToken == playerToken) {
+					currentTurnToken = cpuToken;
+				} else {
+					currentTurnToken = playerToken;
+				}
 			}
 			
-			// Pass turn
-			if (currentTurnToken == playerToken) {
-				currentTurnToken = cpuToken;
-			} else {
-				currentTurnToken = playerToken;
+			out.println("Would you like to play again?");
+			String input = scanner.nextLine();
+			if (input == null || !input.trim().matches("[yY].*")) {
+				return;
 			}
 		}
 	}
 	
+	/**
+	 * Get the player's move, ensuring it is a valid move
+	 * @return 
+	 */
 	private Point getPlayerMove() {
 		out.println("Where would you like to place your " + playerToken + "? Enter coordinates like 1, 1.");
 		while (true) {
@@ -139,6 +152,10 @@ public class TicTacToeGame {
 		}
 	}
 	
+	/**
+	 * Get the computer's move, random, but valid
+	 * @return 
+	 */
 	private Point getCpuMove() {
 		out.println("The computer places a token:");
 		while (true) {
