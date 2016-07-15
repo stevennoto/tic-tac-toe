@@ -1,0 +1,13 @@
+# Build
+**/target/
+
+# Netbeans
+nbactions.xml
+nb-configuration.xml
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nb-configuration.xml
+.netbeans_automatic_build
