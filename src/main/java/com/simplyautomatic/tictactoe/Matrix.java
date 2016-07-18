@@ -1,7 +1,9 @@
 package com.simplyautomatic.tictactoe;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.IntStream;
 
 /**
@@ -95,24 +97,29 @@ public class Matrix {
 	
 	/**
 	 * Flip the matrix vertically.
+	 * @return this matrix, for method chaining
 	 */
-	public void flip() {
+	public Matrix flip() {
 		Collections.reverse(Arrays.asList(matrix));
+		return this;
 	}
 	
 	/**
 	 * Mirror the matrix horizontally
+	 * @return this matrix, for method chaining
 	 */
-	public void mirror() {
+	public Matrix mirror() {
 		for (Integer[] row : matrix) {
 			Collections.reverse(Arrays.asList(row));
 		}
+		return this;
 	}
 	
 	/**
 	 * Rotate the matrix 90 degrees clockwise
+	 * @return this matrix, for method chaining
 	 */
-	public void rotate() {
+	public Matrix rotate() {
 		Integer[][] matrixOld = new Integer[size][size];
 		for (int row = 0; row < size; row++) {
 			System.arraycopy(matrix[row], 0, matrixOld[row], 0, size);
@@ -122,6 +129,20 @@ public class Matrix {
 				matrix[row][column] = matrixOld[size - column - 1][row];
 			}
 		}
+		return this;
+	}
+	
+	/**
+	 * Negate all entries in matrix
+	 * @return this matrix, for method chaining
+	 */
+	public Matrix negate() {
+		for (Integer[] row : matrix) {
+			for (int column = 0; column < size; column++) {
+				row[column] = -row[column];
+			}
+		}
+		return this;
 	}
 	
 	/**
@@ -148,6 +169,37 @@ public class Matrix {
 	}
 	
 	/**
+	 * Get a list of all equivalent matrix strings. For this usage, matrices are 
+	 * equivalent if their values match after any number of rotations, mirrors, 
+	 * or flips. There are 8 such Strings for any matrix (ignoring possibility of 
+	 * duplicates): 4 rotations, mirrored horizontally and vertically, and
+	 * transposed along main diagonal and antidiagonal.
+	 * @return 
+	 */
+	public List<String> getAllEquivalentStrings() {
+		List<String> equivalentMatrixStrings = new ArrayList<>();
+		Matrix matrixCopy = deepCopy();
+		// 4 standard rotations
+		equivalentMatrixStrings.add(matrixCopy.toString());
+		equivalentMatrixStrings.add(matrixCopy.rotate().toString());
+		equivalentMatrixStrings.add(matrixCopy.rotate().toString());
+		equivalentMatrixStrings.add(matrixCopy.rotate().toString());
+		
+		// Mirror horizontally and vertically
+		equivalentMatrixStrings.add(matrixCopy.mirror().toString());
+		matrixCopy = deepCopy();
+		equivalentMatrixStrings.add(matrixCopy.flip().toString());
+		
+		// Transpose over diagonal and antidiagonal axes
+		matrixCopy = deepCopy();
+		equivalentMatrixStrings.add(matrixCopy.rotate().mirror().toString());
+		matrixCopy = deepCopy();
+		equivalentMatrixStrings.add(matrixCopy.rotate().flip().toString());
+		
+		return equivalentMatrixStrings;
+	}
+	
+	/**
 	 * Main method, for testing
 	 * @param args 
 	 */
@@ -161,14 +213,10 @@ public class Matrix {
 			}
 		}
 		System.out.println(m);
-		m.flip();
-		System.out.println(m);
-		m.flip();
-		System.out.println(m);
-		m.mirror();
-		System.out.println(m);
-		m.mirror();
-		System.out.println(m);
+		System.out.println(m.flip());
+		System.out.println(m.flip());
+		System.out.println(m.mirror());
+		System.out.println(m.mirror());
 		System.out.println("row total " + m.getRowTotal(1));
 		System.out.println("row total " + m.getRowTotal(2));
 		System.out.println("row total " + m.getRowTotal(3));
@@ -177,13 +225,15 @@ public class Matrix {
 		System.out.println("col total " + m.getColumnTotal(3));
 		System.out.println("diag total " + m.getMainDiagonalTotal());
 		System.out.println("diag total " + m.getAntiDiagonalTotal());
-		m.rotate();
-		System.out.println(m);
-		m.rotate();
-		System.out.println(m);
-		m.rotate();
-		System.out.println(m);
-		m.rotate();
-		System.out.println(m);
+		System.out.println(m.rotate());
+		System.out.println(m.rotate());
+		System.out.println(m.rotate());
+		System.out.println(m.rotate());
+		System.out.println(m.negate());
+		System.out.println(m.negate());
+		List<String> allStrings = m.getAllEquivalentStrings();
+		for (String s : allStrings) {
+			System.out.println("s: " + s);
+		}
 	}
 }

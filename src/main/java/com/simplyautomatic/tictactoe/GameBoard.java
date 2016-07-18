@@ -1,5 +1,7 @@
 package com.simplyautomatic.tictactoe;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -120,6 +122,27 @@ public class GameBoard {
 	 */
 	public boolean isDrawn() {
 		return !isWon() && numMoves >= numBoardPositions;
+	}
+	
+	/**
+	 * Get a simple String representation of the board.
+	 * @return 
+	 */
+	public String getBoardString() {
+		return boardMatrix.toString();
+	}
+	
+	/**
+	 * Get a list of all equivalent board representations. Boards are equivalent 
+	 * if their token positions match, after any number of rotations, mirrors, 
+	 * or token-swaps (switching X and O).
+	 * @return 
+	 */
+	public List<String> getAllEquivalentBoardStrings() {
+		// Get all equivalent forms of board, and of opposite board (switch X and O)
+		List<String> equivalentBoardStrings = boardMatrix.getAllEquivalentStrings();
+		equivalentBoardStrings.addAll(boardMatrix.deepCopy().negate().getAllEquivalentStrings());
+		return equivalentBoardStrings;
 	}
 	
 	/**

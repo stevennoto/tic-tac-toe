@@ -3,6 +3,7 @@ package com.simplyautomatic.tictactoe;
 import java.awt.Point;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -51,10 +52,10 @@ public class TicTacToeGame {
 				if (input != null && input.trim().matches("\\d+")) {
 					boardSize = Integer.parseInt(input.trim());
 				}
-				if (boardSize > 1) {
+				if (boardSize > 2) {
 					break;
 				} else {
-					out.println("Please enter a valid number, larger than 1.");
+					out.println("Please enter a valid number, larger than 2.");
 				}
 			}
 			board = new GameBoard(boardSize);
@@ -194,6 +195,7 @@ public class TicTacToeGame {
 			GameBoard proposedGameState = new GameBoard(board);
 			proposedGameState.placeToken(cpuToken, row, column);
 			if (isLosingMove(proposedGameState)) {
+				//System.out.println("Avoiding losing move:\n" + proposedGameState.toString());
 				continue;
 			}
 			
@@ -208,7 +210,7 @@ public class TicTacToeGame {
 	 */
 	private void recordLosingMove(GameBoard board) {
 		System.out.println("Recording losing move:\n" + board.toString());
-		losingMoves.add(board);
+		losingMoves.add(board.getBoardString());
 	}
 	
 	/**
@@ -217,7 +219,8 @@ public class TicTacToeGame {
 	 * @return 
 	 */
 	private boolean isLosingMove(GameBoard board) {
-		return losingMoves.contains(board);
+		List<String> equivalentBoards = board.getAllEquivalentBoardStrings();
+		return equivalentBoards.stream().anyMatch(equivalentBoard -> (losingMoves.contains(equivalentBoard)));
 	}
 	
 	/**

@@ -15,18 +15,18 @@ public class BoardStateRepository {
 	
 	/**
 	 * Add a board state to repository
-	 * @param board 
+	 * @param boardState 
 	 */
-	public void add(GameBoard board) {
-		boardStateSet.add(board.toString());
+	public void add(String boardState) {
+		boardStateSet.add(boardState);
 	}
 	
 	/**
 	 * Check whether board state is in repository
-	 * @param board
+	 * @param boardState 
 	 * @return 
 	 */
-	public boolean contains(GameBoard board) {
-		return boardStateSet.contains(board.toString());
+	public boolean contains(String boardState) {
+		return boardStateSet.contains(boardState);
 	}
 }
