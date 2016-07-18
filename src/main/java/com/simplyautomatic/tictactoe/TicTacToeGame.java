@@ -21,7 +21,7 @@ public class TicTacToeGame {
 	private Token currentTurnToken;
 	
 	// AI:
-	private final BoardPositionRepository losingMoves;
+	private final BoardStateRepository losingMoves;
 
 	/**
 	 * Construct a new tic-tac-toe game
@@ -32,7 +32,7 @@ public class TicTacToeGame {
 		in = inStream;
 		out = outStream;
 		scanner = new Scanner(in);
-		losingMoves = new BoardPositionRepository();
+		losingMoves = new BoardStateRepository();
 	}
 	
 	/**
@@ -208,7 +208,7 @@ public class TicTacToeGame {
 	 */
 	private void recordLosingMove(GameBoard board) {
 		System.out.println("Recording losing move:\n" + board.toString());
-		losingMoves.add(board.toString());
+		losingMoves.add(board);
 	}
 	
 	/**
@@ -217,7 +217,7 @@ public class TicTacToeGame {
 	 * @return 
 	 */
 	private boolean isLosingMove(GameBoard board) {
-		return losingMoves.contains(board.toString());
+		return losingMoves.contains(board);
 	}
 	
 	/**
