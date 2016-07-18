@@ -9,6 +9,7 @@ import java.util.Scanner;
  * Main class for tic-tac-toe game.
  */
 public class TicTacToeGame {
+	// I/O:
 	private final InputStream in;
 	private final PrintStream out;
 	private final Scanner scanner;
@@ -18,6 +19,9 @@ public class TicTacToeGame {
 	private Token playerToken;
 	private Token cpuToken;
 	private Token currentTurnToken;
+	
+	// AI:
+	private final BoardPositionRepository losingMoves;
 
 	/**
 	 * Construct a new tic-tac-toe game
@@ -28,6 +32,7 @@ public class TicTacToeGame {
 		in = inStream;
 		out = outStream;
 		scanner = new Scanner(in);
+		losingMoves = new BoardPositionRepository();
 	}
 	
 	/**
@@ -53,6 +58,7 @@ public class TicTacToeGame {
 				}
 			}
 			board = new GameBoard(boardSize);
+			GameBoard lastMoveBoard = new GameBoard(board);
 
 			// Get token preference
 			out.println("Would you like to play as X or O? (X goes first)");
@@ -75,7 +81,7 @@ public class TicTacToeGame {
 			// Display initial empty board
 			out.println("Let's play!");
 			out.println(board.toString());
-
+			
 			// Main game loop
 			while(true) {
 				// Get move from player or CPU
@@ -85,22 +91,35 @@ public class TicTacToeGame {
 				} else {
 					move = getCpuMove();
 				}
+				
+				// If CPU conceded, tell player
+				if (move == null) {
+					out.println("I concede! The only winning move is not to play.");
+					break;
+				}
 
 				// Place token, display board
 				board.placeToken(currentTurnToken, (int)move.getX(), (int)move.getY());
 				out.println(board.toString());
+				
+				// If CPU move, remember board state, in case this is a losing move
+				if (currentTurnToken == cpuToken) {
+					lastMoveBoard = new GameBoard(board);
+				}
 
 				// Check for win/draw
 				if (board.isWon()) {
 					Token winningToken = board.getWinningToken();
 					if (winningToken == playerToken) {
 						out.println("You won! Congratulations!");
+						// If player won, save last board state (the CPU's losing move)
+						recordLosingMove(lastMoveBoard);
 					} else {
 						out.println("You lost! How about a nice game of chess?");
 					}
 					break;
 				} else if (board.isDrawn()) {
-					out.println("The game is a draw. The only winning move is not to play.");
+					out.println("The game is a draw. Good game!");
 					break;
 				}
 
@@ -154,19 +173,51 @@ public class TicTacToeGame {
 	
 	/**
 	 * Get the computer's move, random, but valid
-	 * @return 
+	 * @return valid move, or null if conceding
 	 */
 	private Point getCpuMove() {
-		out.println("The computer places a token:");
+		int moveAttempts = 0;
 		while (true) {
+			// If cannot find a valid, non-losing move, then concede
+			if (++moveAttempts > 10 * board.getBoardSize() * board.getBoardSize()) {
+				return null;
+			}
+			
 			// Choose a random (valid) move
 			int row = (int) Math.floor(Math.random() * board.getBoardSize()) + 1;
 			int column = (int) Math.floor(Math.random() * board.getBoardSize()) + 1;
 			if (board.getTokenAt(row, column) != null) {
 				continue;
 			}
+			
+			// Check to see if this move is a losing move, that was previously recorded
+			GameBoard proposedGameState = new GameBoard(board);
+			proposedGameState.placeToken(cpuToken, row, column);
+			if (isLosingMove(proposedGameState)) {
+				continue;
+			}
+			
+			out.println("The computer places a token:");
 			return new Point(row, column);
 		}
+	}
+	
+	/**
+	 * Record a board state as having lost, to avoid in the future.
+	 * @param board Board state with most-recent losing CPU move
+	 */
+	private void recordLosingMove(GameBoard board) {
+		System.out.println("Recording losing move:\n" + board.toString());
+		losingMoves.add(board.toString());
+	}
+	
+	/**
+	 * Check whether a proposed board state was previously recorded as a losing move
+	 * @param board
+	 * @return 
+	 */
+	private boolean isLosingMove(GameBoard board) {
+		return losingMoves.contains(board.toString());
 	}
 	
 	/**

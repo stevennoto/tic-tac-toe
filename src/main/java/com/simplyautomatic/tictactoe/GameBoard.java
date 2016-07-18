@@ -24,6 +24,17 @@ public class GameBoard {
 	}
 
 	/**
+	 * Copy-constructor, to make a new board identical to existing one
+	 * @param other
+	 */
+	public GameBoard(GameBoard other) {
+		this.boardMatrix = other.boardMatrix.deepCopy();
+		this.numMoves = other.numMoves;
+		this.boardSize = other.boardSize;
+		this.numBoardPositions = other.numBoardPositions;
+	}
+
+	/**
 	 * Get board size.
 	 * @return 
 	 */

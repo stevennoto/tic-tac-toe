@@ -136,6 +136,18 @@ public class Matrix {
 	}
 	
 	/**
+	 * Return a deep copy/clone of the matrix
+	 * @return 
+	 */
+	public Matrix deepCopy() {
+		Matrix clone = new Matrix(size);
+		for (int row = 0; row < size; row++) {
+			System.arraycopy(matrix[row], 0, clone.matrix[row], 0, size);
+		}
+		return clone;
+	}
+	
+	/**
 	 * Main method, for testing
 	 * @param args 
 	 */
