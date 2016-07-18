@@ -11,3 +11,6 @@ dist/
 nbdist/
 nb-configuration.xml
 .netbeans_automatic_build
+
+# Database file
+tictactoe.db

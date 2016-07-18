@@ -209,7 +209,7 @@ public class TicTacToeGame {
 	 * @param board Board state with most-recent losing CPU move
 	 */
 	private void recordLosingMove(GameBoard board) {
-		System.out.println("Recording losing move:\n" + board.toString());
+		//System.out.println("Recording losing move:\n" + board.toString());
 		losingMoves.add(board.getBoardString());
 	}
 	
